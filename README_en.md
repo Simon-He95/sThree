@@ -1,8 +1,9 @@
 <p align="center">
 <img  src="./assets/icon.jpg" alt="s-three">
 </p>
+<p align="center"><a href="https://www.npmjs.com/package/@simon_he/s-three"><img src="https://img.shields.io/npm/v/@simon_he/s-three?color=3fb883&amp;label=" alt="NPM version"></a></p>
 <p align="center"><a href="https://www.hejian.club/posts/toolsfunction">Docs</a></p>
-<p align="center"> English | <a href="./README.md">简体中文</a></p>
+<p align="center"> <a href="./README.md">简体中文</a> | English</p>
 ## sThree
 - Simplify the use of three
 - It can make your code more concise and beautiful
