@@ -7,10 +7,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git + git@github.com:Simon-He95/s-three.git"
+    "url": "git + git@github.com:Simon-He95/sThree.git"
   },
   "bugs": {
-    "url": "https://github.com/Simon-He95/s-three/issues"
+    "url": "https://github.com/Simon-He95/sThree/issues"
   },
   "keywords": [
     "s-three",
