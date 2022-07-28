@@ -364,10 +364,11 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
       throw new Error(`${container} container is not found`)
 
     const { createCamera, createMesh, animate, mousemove, mousedown, mouseup, debug, alias, shadowType } = options
-    if (debug && !gui)
+    if (debug && !gui) {
       gui = new dat.GUI()
-    else
-      gui?.hide()
+      gui.closed = true
+    }
+    else { gui?.hide() }
     if (alias) {
       Object.assign(fnNameMap!, alias)
       Object.keys(alias).forEach((key) => {
@@ -428,7 +429,6 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
       camera.aspect = Math.min(width / height, 2)
       camera.updateProjectionMatrix()
       renderer.setSize(width, height, false)
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     }
   }
   function c(fnName: keyof FnNameMap | keyof T, ...args: any[]): any {
