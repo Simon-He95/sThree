@@ -357,10 +357,10 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
     if (hasMounted)
       return
     if (isStr(container))
-      container = document.querySelector(container as string) as HTMLElement || container
+      container = document.querySelector(container) as HTMLElement || container
     if (!isMounted && isStr(container))
       return isMounted = true
-    else if (!container)
+    else if (isStr(container))
       throw new Error(`${container} container is not found`)
 
     const { createCamera, createMesh, animate, mousemove, mousedown, mouseup, debug, alias, shadowType } = options
