@@ -1,13 +1,13 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import type { Mesh, Object3D, PerspectiveCamera, WebGLRenderer } from 'three'
 import * as dat from 'dat.gui'
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
-import type { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry.js'
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
-import { addEventListener, animationFrameWrapper, dragEvent, isFn, isStr, useMutationObserver } from 'simon-js-tool'
+// import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+// import type { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry.js'
+// import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import { addEventListener, animationFrameWrapper, dragEvent, /* isFn, */ isStr, useMutationObserver } from 'simon-js-tool'
 type T = typeof THREE
 type K = keyof WebGLRenderer
 interface AnimateOptions {
@@ -16,7 +16,7 @@ interface AnimateOptions {
   timestamp: number
 }
 interface MiddlewareOptions {
-  OrbitControls: OrbitControls
+  // OrbitControls: OrbitControls
   camera: PerspectiveCamera
 }
 interface FnNameMap {
@@ -155,11 +155,11 @@ interface Scene extends Object3D {
 
 interface ReturnType {
   c: (fnName: keyof FnNameMap | keyof T, ...args: any[]) => any
-  cf: (url: string, text: string, options: TextGeometryParameters) => Promise<TextGeometry>
+  // cf: (url: string, text: string, options: TextGeometryParameters) => Promise<TextGeometry>
   track: (...args: [target: Object, propName: string, min?: number, max?: number, step?: number]) => dat.GUIController
   setUV: (target: Mesh, size?: number) => void
-  glTFLoader: (url: string, dracoLoader?: DRACOLoader, callback?: (gltf: GLTFLoader) => void) => Promise<GLTFLoader>
-  draCOLoader: (decoderPath: string) => DRACOLoader
+  // glTFLoader: (url: string, dracoLoader?: DRACOLoader, callback?: (gltf: GLTFLoader) => void) => Promise<GLTFLoader>
+  // draCOLoader: (decoderPath: string) => DRACOLoader
   animationArray: Mesh[]
   THREE: T
   scene: Scene
@@ -340,12 +340,12 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
 
   return {
     c,
-    cf,
+    // cf,
     track,
     setUV,
     animationArray,
-    glTFLoader,
-    draCOLoader,
+    // glTFLoader,
+    // draCOLoader,
     THREE,
     scene,
     renderer,
@@ -397,7 +397,10 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
       renderer.shadowMap.type = THREE[shadowType]
     }
     const animationOptions = {
-      params: options.middleware?.({ OrbitControls: OrbitControls as unknown as OrbitControls, camera }),
+      params: options.middleware?.({
+        // OrbitControls: OrbitControls as unknown as OrbitControls,
+        camera,
+      }),
       camera,
     }
     if (animate) {
@@ -449,11 +452,11 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
     // @ts-expect-error three not export specific name
     return new _class(...args)
   }
-  function cf(url: string, text: string, options: TextGeometryParameters): Promise<TextGeometry> {
-    if (!url.endsWith('.json'))
-      throw new Error('You need to use typeface.json')
-    return new Promise(resolve => new FontLoader().load(url, font => resolve(new TextGeometry(text, Object.assign(options, { font })))))
-  }
+  // function cf(url: string, text: string, options: TextGeometryParameters): Promise<TextGeometry> {
+  //   if (!url.endsWith('.json'))
+  //     throw new Error('You need to use typeface.json')
+  //   return new Promise(resolve => new FontLoader().load(url, font => resolve(new TextGeometry(text, Object.assign(options, { font })))))
+  // }
   function track(...args: [target: Object, propName: string, min?: number, max?: number, step?: number]): dat.GUIController {
     if (!gui)
       throw new Error('gui is not created, please use debug option')
@@ -469,37 +472,37 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
   function setUV(target: Mesh, size = 2) {
     target.geometry.setAttribute('uv2', c('ba', target.geometry.attributes.uv.array, size))
   }
-  function glTFLoader(url: string, dracoLoader?: DRACOLoader, callback?: (gltf: GLTFLoader) => void): Promise<GLTFLoader> {
-    return new Promise((resolve) => {
-      if (isFn(dracoLoader)) {
-        callback = dracoLoader as unknown as (gltf: GLTFLoader) => void
-        dracoLoader = undefined
-      }
-      let gltfLoader
-      if (!gltfLoaderMap.get('gltf')) {
-        gltfLoader = new GLTFLoader()
-        gltfLoaderMap.set('gltf', gltfLoader)
-      }
-      else { gltfLoader = gltfLoaderMap.get('gltf') }
-      if (dracoLoader)
-        gltfLoader.setDRACOLoader(dracoLoader)
-      gltfLoader.setCrossOrigin('Anonymous')
-      gltfLoader.load(url, (gltf: GLTFLoader) => {
-        resolve(gltf)
-        callback?.(gltf)
-      })
-    })
-  }
-  function draCOLoader(decoderPath: string): DRACOLoader {
-    let dracoLoader
-    if (!dracoLoaderMap.get('draco')) {
-      dracoLoader = new DRACOLoader()
-      dracoLoaderMap.set('draco', dracoLoader)
-    }
-    else { dracoLoader = dracoLoaderMap.get('draco') }
-    dracoLoader.setDecoderPath(decoderPath)
-    return dracoLoader
-  }
+  // function glTFLoader(url: string, dracoLoader?: DRACOLoader, callback?: (gltf: GLTFLoader) => void): Promise<GLTFLoader> {
+  //   return new Promise((resolve) => {
+  //     if (isFn(dracoLoader)) {
+  //       callback = dracoLoader as unknown as (gltf: GLTFLoader) => void
+  //       dracoLoader = undefined
+  //     }
+  //     let gltfLoader
+  //     if (!gltfLoaderMap.get('gltf')) {
+  //       gltfLoader = new GLTFLoader()
+  //       gltfLoaderMap.set('gltf', gltfLoader)
+  //     }
+  //     else { gltfLoader = gltfLoaderMap.get('gltf') }
+  //     if (dracoLoader)
+  //       gltfLoader.setDRACOLoader(dracoLoader)
+  //     gltfLoader.setCrossOrigin('Anonymous')
+  //     gltfLoader.load(url, (gltf: GLTFLoader) => {
+  //       resolve(gltf)
+  //       callback?.(gltf)
+  //     })
+  //   })
+  // }
+  // function draCOLoader(decoderPath: string): DRACOLoader {
+  //   let dracoLoader
+  //   if (!dracoLoaderMap.get('draco')) {
+  //     dracoLoader = new DRACOLoader()
+  //     dracoLoaderMap.set('draco', dracoLoader)
+  //   }
+  //   else { dracoLoader = dracoLoaderMap.get('draco') }
+  //   dracoLoader.setDecoderPath(decoderPath)
+  //   return dracoLoader
+  // }
   function setRendererAttributes(options: Record<K, any>) {
     (Object.keys(options) as K[]).forEach((key: K) => {
       (renderer as any)[key] = options[key]
