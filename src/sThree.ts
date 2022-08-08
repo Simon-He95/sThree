@@ -3,7 +3,7 @@ import * as THREE from 'three'
 // import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 // import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import type { Mesh, Object3D, PerspectiveCamera, WebGLRenderer } from 'three'
-import * as dat from 'dat.gui'
+// import * as dat from 'dat.gui'
 // import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 // import type { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry.js'
 // import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
@@ -156,7 +156,7 @@ interface Scene extends Object3D {
 interface ReturnType {
   c: (fnName: keyof FnNameMap | keyof T, ...args: any[]) => any
   // cf: (url: string, text: string, options: TextGeometryParameters) => Promise<TextGeometry>
-  track: (...args: [target: Object, propName: string, min?: number, max?: number, step?: number]) => dat.GUIController
+  // track: (...args: [target: Object, propName: string, min?: number, max?: number, step?: number]) => dat.GUIController
   setUV: (target: Mesh, size?: number) => void
   // glTFLoader: (url: string, dracoLoader?: DRACOLoader, callback?: (gltf: GLTFLoader) => void) => Promise<GLTFLoader>
   // draCOLoader: (decoderPath: string) => DRACOLoader
@@ -170,7 +170,7 @@ interface ReturnType {
 export function sThree(container: HTMLElement | string, options: SThreeOptions): ReturnType {
   let isMounted = false
   let hasMounted = false
-  let gui: dat.GUI
+  // let gui: dat.GUI
   let scene: Scene | null = new THREE.Scene()
   const renderer = new THREE.WebGLRenderer()
   let dom: HTMLCanvasElement | null = renderer.domElement
@@ -325,7 +325,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
   addEventListener(document, 'DOMContentLoaded', update)
 
   function destoryStop() {
-    gui?.hide()
+    // gui?.hide()
     stop?.()
     scene = null
     renderer.dispose()
@@ -341,7 +341,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
   return {
     c,
     // cf,
-    track,
+    // track,
     setUV,
     animationArray,
     // glTFLoader,
@@ -363,12 +363,12 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
     else if (isStr(container))
       throw new Error(`${container} container is not found`)
 
-    const { createCamera, createMesh, animate, mousemove, mousedown, mouseup, debug, alias, shadowType } = options
-    if (debug && !gui) {
-      gui = new dat.GUI()
-      gui.closed = true
-    }
-    else { gui?.hide() }
+    const { createCamera, createMesh, animate, mousemove, mousedown, mouseup, /* debug, */ alias, shadowType } = options
+    // if (debug && !gui) {
+    //   gui = new dat.GUI()
+    //   gui.closed = true
+    // }
+    // else { gui?.hide() }
     if (alias) {
       Object.assign(fnNameMap!, alias)
       Object.keys(alias).forEach((key) => {
@@ -457,18 +457,18 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
   //     throw new Error('You need to use typeface.json')
   //   return new Promise(resolve => new FontLoader().load(url, font => resolve(new TextGeometry(text, Object.assign(options, { font })))))
   // }
-  function track(...args: [target: Object, propName: string, min?: number, max?: number, step?: number]): dat.GUIController {
-    if (!gui)
-      throw new Error('gui is not created, please use debug option')
-    const p = gui.domElement.parentNode!
-    if (p?.childNodes.length > 1)
-      p?.removeChild(p.childNodes[0])
-    if (args[0] === 'color') {
-      const target = args[1][args[2]!] as any
-      return gui.addColor(args[1] as unknown as Record<string, any>, args[2] as unknown as string).onChange(() => target?.set?.(args[1][args[2]!]))
-    }
-    return gui.add(...args)
-  }
+  // function track(...args: [target: Object, propName: string, min?: number, max?: number, step?: number]): dat.GUIController {
+  //   if (!gui)
+  //     throw new Error('gui is not created, please use debug option')
+  //   const p = gui.domElement.parentNode!
+  //   if (p?.childNodes.length > 1)
+  //     p?.removeChild(p.childNodes[0])
+  //   if (args[0] === 'color') {
+  //     const target = args[1][args[2]!] as any
+  //     return gui.addColor(args[1] as unknown as Record<string, any>, args[2] as unknown as string).onChange(() => target?.set?.(args[1][args[2]!]))
+  //   }
+  //   return gui.add(...args)
+  // }
   function setUV(target: Mesh, size = 2) {
     target.geometry.setAttribute('uv2', c('ba', target.geometry.attributes.uv.array, size))
   }
