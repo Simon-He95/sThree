@@ -7,7 +7,7 @@ import * as dat from 'dat.gui'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import type { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
-import { addEventListener, animationFrameWrapper, dragEvent, isFn, isStr, useMutationObserver } from 'simon-js-tool'
+import { dragEvent, isFn, isStr, useAnimationFrame, useEventListener, useMutationObserver } from 'lazy-js-utils'
 type T = typeof THREE
 type K = keyof WebGLRenderer
 interface AnimateOptions {
@@ -322,7 +322,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
   const dracoLoaderMap = new Map()
   const animationArray: Mesh[] = []
   update()
-  addEventListener(document, 'DOMContentLoaded', update)
+  useEventListener(document, 'DOMContentLoaded', update)
 
   function destoryStop() {
     gui?.hide()
@@ -405,9 +405,9 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
     }
     if (animate) {
       const clock = new THREE.Clock()
-      stop = animationFrameWrapper((time: number) => renderer.render(scene!, animate(Object.assign(animationOptions, { elapsedTime: clock.getElapsedTime(), timestamp: time })) || camera), 0)
+      stop = useAnimationFrame((time: number) => renderer.render(scene!, animate(Object.assign(animationOptions, { elapsedTime: clock.getElapsedTime(), timestamp: time })) || camera), 0)
     }
-    else { animationFrameWrapper(() => renderer.render(scene!, camera), 0, true) }
+    else { useAnimationFrame(() => renderer.render(scene!, camera), 0, true) }
 
     (container as HTMLElement).appendChild(dom!)
     hasMounted = true
@@ -417,7 +417,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
       dragEnd: mouseup,
     })
     resize()
-    addEventListener(window, 'resize', resize)
+    useEventListener(window, 'resize', resize)
     useMutationObserver((container as HTMLElement)?.parentNode, (mutations: MutationRecord[]) => {
       mutations.forEach((mutation) => {
         mutation.removedNodes.forEach((node) => {
