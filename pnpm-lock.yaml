@@ -15,8 +15,8 @@ importers:
         specifier: ^0.7.9
         version: 0.7.9
       lazy-js-utils:
-        specifier: ^0.0.81
-        version: 0.0.81(vue@3.2.36)
+        specifier: ^0.0.82
+        version: 0.0.82(vue@3.2.36)
       three:
         specifier: ^0.142.0
         version: 0.142.0
@@ -3365,6 +3365,19 @@ packages:
       qrcode: 1.5.1
       spark-md5: 3.0.2
       vue: 3.2.36
+    dev: true
+
+  /lazy-js-utils@0.0.82(vue@3.2.36):
+    resolution: {integrity: sha512-J/579unr/W0mUmKgH5X6ZOgIUm7iTBXJqdhP+ufZsX8LmA2iyitww72/oz6uUycN3RNtG/rfapYbDnfaqzLdgw==}
+    peerDependencies:
+      vue: ^3.2.41
+    dependencies:
+      htmlparser2: 8.0.1
+      lazy-js-utils: 0.0.37(vue@3.2.36)
+      qrcode: 1.5.1
+      spark-md5: 3.0.2
+      vue: 3.2.36
+    dev: false
 
   /levn@0.3.0:
     resolution: {integrity: sha512-0OO4y2iOHix2W6ujICbKIaEQXvFQHue65vUG3pb5EUomzPI90z9hsA1VsO/dbIIpC53J8gxM9Q4Oho0jrCM/yA==}
