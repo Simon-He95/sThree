@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import type { Mesh, Object3D, PerspectiveCamera, WebGLRenderer } from 'three'
 import * as dat from 'dat.gui'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
@@ -137,8 +137,8 @@ interface FnNameMap {
 }
 type ShadowType = 'BasicShadowMap' | 'PCFShadowMap' | 'PCFSoftShadowMap' | 'VSMShadowMap'
 interface SThreeOptions extends Record<string, any> {
-  createMesh: () => void
-  createCamera: () => PerspectiveCamera
+  createMesh: (c: ReturnType['c'], scene: Scene) => void
+  createCamera: (c: ReturnType['c'], scene: Scene) => PerspectiveCamera
   animate?: (animationOptions: AnimateOptions) => void | PerspectiveCamera
   middleware?: (middlewareOptions: MiddlewareOptions) => any
   mousemove?: (e: Event) => void
@@ -321,7 +321,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
   const gltfLoaderMap = new Map()
   const dracoLoaderMap = new Map()
   const animationArray: Mesh[] = []
-  update()
+
   useEventListener(document, 'DOMContentLoaded', update)
 
   function destoryStop() {
@@ -337,7 +337,6 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
     dracoLoaderMap.clear()
     animationArray.length = 0
   }
-
   return {
     c,
     cf,
@@ -388,8 +387,8 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
         scene!.remove(arg)
       }
     }
-    createMesh?.()
-    const camera = createCamera?.()
+    createMesh?.(c, scene!)
+    const camera = createCamera?.(c, scene!)
     if (!camera)
       throw new Error('camera is not created')
     if (shadowType) {
