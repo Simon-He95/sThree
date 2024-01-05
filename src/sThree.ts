@@ -7,7 +7,7 @@ import * as dat from 'dat.gui'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import type { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
-import { dragEvent, isFn, isStr, useAnimationFrame, useEventListener, useMutationObserver } from 'lazy-js-utils'
+import { dragEvent, isFn, isStr, useEventListener, useMutationObserver, useRaf } from 'lazy-js-utils'
 type T = typeof THREE
 type K = keyof WebGLRenderer
 interface AnimateOptions {
@@ -405,9 +405,9 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
     }
     if (animate) {
       const clock = new THREE.Clock()
-      stop = useAnimationFrame((time: number) => renderer.render(scene!, animate(Object.assign(animationOptions, { elapsedTime: clock.getElapsedTime(), timestamp: time })) || camera), 0)
+      stop = useRaf((time: number) => renderer.render(scene!, animate(Object.assign(animationOptions, { elapsedTime: clock.getElapsedTime(), timestamp: time })) || camera), 0)
     }
-    else { useAnimationFrame(() => renderer.render(scene!, camera), 0, true) }
+    else { useRaf(() => renderer.render(scene!, camera), 0, true) }
 
     (container as HTMLElement).appendChild(dom!)
     hasMounted = true
