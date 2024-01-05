@@ -27,6 +27,9 @@ importers:
       '@antfu/eslint-config':
         specifier: ^0.25.0
         version: 0.25.0(eslint@8.16.0)(typescript@4.7.2)
+      '@simon_he/s-three':
+        specifier: ^0.0.11
+        version: 0.0.11
       '@types/dat.gui':
         specifier: ^0.7.7
         version: 0.7.7
