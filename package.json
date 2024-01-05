@@ -1,6 +1,6 @@
 {
   "name": "@simon_he/s-three",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "packageManager": "pnpm@6.32.3",
   "description": "s-three",
   "author": "Simon He",
