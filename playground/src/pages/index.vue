@@ -1,23 +1,37 @@
 <script setup lang="ts">
+import { isDark } from '~/composables'
 import { sThree } from '../../../src/index'
 
 let points: any
 let unmount: any
 let geometry
 let material
+
 const params = {
   count: 200,
   size: 0.008,
   radius: 4.5,
-  insideColor: '#552fc4',
-  outsideColor: '#000',
+  insideColor: isDark.value ? '#552fc4' : '#000',
+  outsideColor: isDark.value ? '#fff' : '#000',
 }
+watch(() => isDark.value, () => {
+  if (isDark.value) {
+    params.insideColor = '#552fc4'
+    params.outsideColor = '#fff'
+  }
+  else {
+    params.insideColor = '#000'
+    params.outsideColor = '#552fc4'
+  }
+  generateGalaxy()
+})
+
 const { c, animationArray, THREE, scene, renderer } = sThree('#container', {
   createMesh() {
     generateGalaxy()
   },
   createCamera() {
-    const camera = c('PC')
+    const camera = c('pc')
     camera.position.set(0, 0, 2)
     return camera
   },

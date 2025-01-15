@@ -1,13 +1,14 @@
+import type { Mesh, Object3D, PerspectiveCamera, WebGLRenderer } from 'three'
+import type { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry.js'
+import * as dat from 'dat.gui'
+import { dragEvent, isFn, isStr, useEventListener, useMutationObserver, useRaf } from 'lazy-js-utils'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
-import type { Mesh, Object3D, PerspectiveCamera, WebGLRenderer } from 'three'
-import * as dat from 'dat.gui'
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
-import type { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
-import { dragEvent, isFn, isStr, useEventListener, useMutationObserver, useRaf } from 'lazy-js-utils'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+
 type T = typeof THREE
 type K = keyof WebGLRenderer
 interface AnimateOptions {
@@ -156,7 +157,7 @@ interface Scene extends Object3D {
 interface ReturnType {
   c: (fnName: keyof FnNameMap | keyof T, ...args: any[]) => any
   cf: (url: string, text: string, options: TextGeometryParameters) => Promise<TextGeometry>
-  track: (...args: [target: Object, propName: string, min?: number, max?: number, step?: number]) => dat.GUIController
+  track: (...args: [target: object, propName: keyof object, min?: number, max?: number, step?: number]) => dat.GUIController
   setUV: (target: Mesh, size?: number) => void
   glTFLoader: (url: string, dracoLoader?: DRACOLoader, callback?: (gltf: GLTFLoader) => void) => Promise<GLTFLoader>
   draCOLoader: (decoderPath: string) => DRACOLoader
@@ -378,8 +379,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
     }
     scene!._add = function (...args: any[]) {
       scene!.add(...args)
-      const result = args.map(arg => () => unmount(arg))
-      return result.length === 1 ? result[0] : result
+      return () => args.map(arg => () => unmount(arg))
       function unmount(arg: Mesh) {
         const { material, geometry } = arg;
         (material as any).dispose()
@@ -456,7 +456,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
       throw new Error('You need to use typeface.json')
     return new Promise(resolve => new FontLoader().load(url, font => resolve(new TextGeometry(text, Object.assign(options, { font })))))
   }
-  function track(...args: [target: Object, propName: string, min?: number, max?: number, step?: number]): dat.GUIController {
+  function track(...args: [object | string, keyof object, number?, number?, number?]): dat.GUIController {
     if (!gui)
       throw new Error('gui is not created, please use debug option')
     const p = gui.domElement.parentNode!
@@ -466,7 +466,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
       const target = args[1][args[2]!] as any
       return gui.addColor(args[1] as unknown as Record<string, any>, args[2] as unknown as string).onChange(() => target?.set?.(args[1][args[2]!]))
     }
-    return gui.add(...args)
+    return gui.add(args[0] as object, args[1], args[2] as any, args[3])
   }
   function setUV(target: Mesh, size = 2) {
     target.geometry.setAttribute('uv2', c('ba', target.geometry.attributes.uv.array, size))
