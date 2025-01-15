@@ -1,7 +1,6 @@
 {
   "name": "@simon_he/s-three",
   "version": "0.0.15",
-  "packageManager": "pnpm@6.35.1",
   "description": "s-three",
   "author": "Simon He",
   "license": "MIT",
