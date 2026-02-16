@@ -80,8 +80,8 @@ importers:
         specifier: ^1.2.5
         version: 1.2.5
       '@simon_he/s-three':
-        specifier: ^0.0.11
-        version: 0.0.11(typescript@4.9.5)
+        specifier: workspace:^
+        version: link:..
       '@types/node':
         specifier: ^17.0.45
         version: 17.0.45
@@ -100,9 +100,6 @@ importers:
       jsdom:
         specifier: ^19.0.0
         version: 19.0.0
-      pnpm:
-        specifier: ^6.35.1
-        version: 6.35.1
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
@@ -3085,11 +3082,6 @@ packages:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
 
-  pnpm@6.35.1:
-    resolution: {integrity: sha512-Pt5JEjV2JSORAqw/XtjfF4k34PBQFpqV3kUMFYSlyrWJsio5Hr3lqy2oJkpprMrVbOyBJsxXfZDQOlvmytIrgA==}
-    engines: {node: '>=12.17'}
-    hasBin: true
-
   postcss-selector-parser@6.0.10:
     resolution: {integrity: sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==}
     engines: {node: '>=4'}
@@ -4400,17 +4392,6 @@ snapshots:
       picomatch: 4.0.2
     optionalDependencies:
       rollup: 2.79.2
-
-  '@simon_he/s-three@0.0.11(typescript@4.9.5)':
-    dependencies:
-      '@vueuse/core': 8.9.4(vue@3.5.13(typescript@4.9.5))
-      dat.gui: 0.7.9
-      lazy-js-utils: 0.0.81(vue@3.5.13(typescript@4.9.5))
-      three: 0.142.0
-      vue: 3.5.13(typescript@4.9.5)
-    transitivePeerDependencies:
-      - '@vue/composition-api'
-      - typescript
 
   '@simon_he/s-three@0.0.11(typescript@5.7.3)':
     dependencies:
@@ -6700,21 +6681,9 @@ snapshots:
 
   kolorist@1.5.1: {}
 
-  lazy-js-utils@0.0.37(vue@3.5.13(typescript@4.9.5)):
-    dependencies:
-      vue: 3.5.13(typescript@4.9.5)
-
   lazy-js-utils@0.0.37(vue@3.5.13(typescript@5.7.3)):
     dependencies:
       vue: 3.5.13(typescript@5.7.3)
-
-  lazy-js-utils@0.0.81(vue@3.5.13(typescript@4.9.5)):
-    dependencies:
-      htmlparser2: 8.0.1
-      lazy-js-utils: 0.0.37(vue@3.5.13(typescript@4.9.5))
-      qrcode: 1.5.1
-      spark-md5: 3.0.2
-      vue: 3.5.13(typescript@4.9.5)
 
   lazy-js-utils@0.0.81(vue@3.5.13(typescript@5.7.3)):
     dependencies:
@@ -7393,8 +7362,6 @@ snapshots:
   pluralize@8.0.0: {}
 
   pngjs@5.0.0: {}
-
-  pnpm@6.35.1: {}
 
   postcss-selector-parser@6.0.10:
     dependencies:

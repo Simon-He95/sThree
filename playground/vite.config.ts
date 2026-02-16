@@ -1,12 +1,12 @@
-/// <reference types="vitest" />
+/// <reference types="vitest/config" />
 
 import path from 'node:path'
 import Vue from '@vitejs/plugin-vue'
 import Unocss from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import { defineConfig } from 'vite'
 import Pages from 'vite-plugin-pages'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   base: './',

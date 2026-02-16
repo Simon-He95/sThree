@@ -87,4 +87,17 @@ function getRandomColorPosition() {
 
 <template>
   <div id="container" fixed w-full h-full z--1 />
+  <section class="sr-only" aria-label="sThree introduction">
+    <h1>sThree: Simplify Three.js Development</h1>
+    <p>
+      sThree helps you create and animate Three.js scenes with a smaller and cleaner API.
+      It includes helpers for camera setup, loaders, debug controls, and render lifecycle management.
+    </p>
+    <p>
+      Learn more on
+      <a href="https://www.npmjs.com/package/@simon_he/s-three" target="_blank" rel="noreferrer">npm</a>
+      and
+      <a href="https://github.com/Simon-He95/sThree" target="_blank" rel="noreferrer">GitHub</a>.
+    </p>
+  </section>
 </template>

@@ -1,18 +1,21 @@
-<script setup lang="ts">
-const props = defineProps<{
-  initial: number
-}>()
-const { count, inc, dec } = useCounter(props.initial)
-</script>
+<script lang="ts">
+import { useCounter } from '@vueuse/core'
+import { defineComponent, h } from 'vue'
 
-<template>
-  <div>
-    {{ count }}
-    <button class="inc" @click="inc()">
-      +
-    </button>
-    <button class="dec" @click="dec()">
-      -
-    </button>
-  </div>
-</template>
+export default defineComponent({
+  props: {
+    initial: {
+      required: true,
+      type: Number,
+    },
+  },
+  setup(props) {
+    const counter = useCounter(props.initial)
+    return () => h('div', [
+      counter.count.value,
+      h('button', { class: 'inc', onClick: () => counter.inc() }, '+'),
+      h('button', { class: 'dec', onClick: () => counter.dec() }, '-'),
+    ])
+  },
+})
+</script>

@@ -35,12 +35,13 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "vue-tsc --noEmit",
-    "test": "vitest --dir test -u",
-    "ptest": "pnpm run -C playground test -u",
+    "test": "vitest run --dir test",
+    "smoke:pack": "bash ./test/pack-smoke.sh",
+    "ptest": "pnpm run -C playground test --run",
     "preview": "pnpm run -C playground preview",
     "test:e2e": "cypress open",
-    "prepublishOnly": "nr build",
-    "release": "bumpp --commit --tag --push && git push origin --tags -f && npm publish"
+    "prepublishOnly": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && bash ./test/pack-smoke.sh",
+    "release": "bumpp --commit --tag --push && git push origin --tags && npm publish"
   },
   "dependencies": {
     "@vueuse/core": "^8.9.4",

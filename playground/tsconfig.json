@@ -2,6 +2,8 @@
   "compilerOptions": {
     "incremental": false,
     "target": "es2016",
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
     "lib": ["DOM", "ESNext"],
     "baseUrl": ".",
     "module": "ESNext",
@@ -12,7 +14,8 @@
     "resolveJsonModule": true,
     "types": [
       "vite/client",
-      "vite-plugin-pages/client"
+      "vite-plugin-pages/client",
+      "vue/jsx"
     ],
     "strict": true,
     "strictNullChecks": true,
@@ -21,5 +24,15 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "auto-imports.d.ts",
+    "components.d.ts",
+    "shims.d.ts",
+    "vite.config.ts"
+  ],
   "exclude": ["dist", "node_modules"]
 }

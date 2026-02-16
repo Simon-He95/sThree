@@ -37,6 +37,18 @@ jobs:
       - name: Lint
         run: nr lint
 
+      - name: Playground Typecheck
+        run: pnpm -C playground typecheck
+
+      - name: Playground Test
+        run: pnpm -C playground test
+
+      - name: Build
+        run: nr build
+
+      - name: Package Smoke Test
+        run: pnpm smoke:pack
+
   test:
     runs-on: ${{ matrix.os }}
 

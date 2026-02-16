@@ -6,7 +6,7 @@
     "dev": "vite --port 3333 --open",
     "typecheck": "vue-tsc --noEmit",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "dependencies": {
     "@vueuse/core": "^8.9.4",
@@ -16,14 +16,13 @@
   "devDependencies": {
     "@antfu/eslint-config": "^0.18.9",
     "@iconify-json/carbon": "^1.2.5",
-    "@simon_he/s-three": "^0.0.11",
+    "@simon_he/s-three": "workspace:^",
     "@types/node": "^17.0.45",
     "@unocss/reset": "^0.29.6",
     "@vitejs/plugin-vue": "^3.2.0",
     "@vue/test-utils": "^2.4.6",
     "eslint": "^8.57.1",
     "jsdom": "^19.0.0",
-    "pnpm": "^6.35.1",
     "typescript": "^4.9.5",
     "unocss": "^0.29.6",
     "unplugin-auto-import": "^0.6.9",

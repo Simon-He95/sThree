@@ -1,9 +1,8 @@
 [build]
 publish = "dist"
-command = "npx pnpm i --store=node_modules/.pnpm-store && npx pnpm run build"
+command = "corepack enable && pnpm install --frozen-lockfile && pnpm run build"
 
 [build.environment]
-NPM_FLAGS = "--version"
 NODE_VERSION = "20"
 
 [[redirects]]

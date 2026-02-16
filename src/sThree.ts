@@ -1,16 +1,29 @@
 import type { Mesh, Object3D, PerspectiveCamera, WebGLRenderer } from 'three'
 import type { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry.js'
-import * as dat from 'dat.gui'
 import { dragEvent, isFn, isStr, useEventListener, useMutationObserver, useRaf } from 'lazy-js-utils'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { type GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 type T = typeof THREE
 type K = keyof WebGLRenderer
+interface GUIControllerLike {
+  max: (value: number) => GUIControllerLike
+  min: (value: number) => GUIControllerLike
+  onChange: (fn: (...args: any[]) => void) => GUIControllerLike
+  onFinishChange: (fn: (...args: any[]) => void) => GUIControllerLike
+  step: (value: number) => GUIControllerLike
+}
+interface GUILike {
+  add: (...args: any[]) => GUIControllerLike
+  addColor: (...args: any[]) => GUIControllerLike
+  closed: boolean
+  domElement: HTMLElement
+  hide: () => void
+}
 interface AnimateOptions {
   camera: PerspectiveCamera
   elapsedTime: number
@@ -151,15 +164,19 @@ interface SThreeOptions extends Record<string, any> {
 }
 
 interface Scene extends Object3D {
-  _add?: (...args: any[]) => void
+  _add?: (...args: Mesh[]) => () => void
 }
+
+type TrackArgs =
+  | [target: object, propName: keyof object, min?: number, max?: number, step?: number]
+  | [mode: 'color', target: Record<string, any>, propName: string]
 
 interface ReturnType {
   c: (fnName: keyof FnNameMap | keyof T, ...args: any[]) => any
   cf: (url: string, text: string, options: TextGeometryParameters) => Promise<TextGeometry>
-  track: (...args: [target: object, propName: keyof object, min?: number, max?: number, step?: number]) => dat.GUIController
+  track: (...args: TrackArgs) => GUIControllerLike
   setUV: (target: Mesh, size?: number) => void
-  glTFLoader: (url: string, dracoLoader?: DRACOLoader, callback?: (gltf: GLTFLoader) => void) => Promise<GLTFLoader>
+  glTFLoader: (url: string, dracoLoader?: DRACOLoader, callback?: (gltf: GLTF) => void) => Promise<GLTF>
   draCOLoader: (decoderPath: string) => DRACOLoader
   animationArray: Mesh[]
   THREE: T
@@ -171,7 +188,7 @@ interface ReturnType {
 export function sThree(container: HTMLElement | string, options: SThreeOptions): ReturnType {
   let isMounted = false
   let hasMounted = false
-  let gui: dat.GUI
+  let gui: GUILike | undefined
   let scene: Scene | null = new THREE.Scene()
   const renderer = new THREE.WebGLRenderer()
   let dom: HTMLCanvasElement | null = renderer.domElement
@@ -323,7 +340,9 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
   const dracoLoaderMap = new Map()
   const animationArray: Mesh[] = []
 
-  useEventListener(document, 'DOMContentLoaded', update)
+  useEventListener(document, 'DOMContentLoaded', () => {
+    void update()
+  })
 
   function destoryStop() {
     gui?.hide()
@@ -353,7 +372,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
     setRendererAttributes,
   }
 
-  function update() {
+  async function update() {
     if (hasMounted)
       return
     if (isStr(container))
@@ -365,8 +384,16 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
 
     const { createCamera, createMesh, animate, mousemove, mousedown, mouseup, debug, alias, shadowType } = options
     if (debug && !gui) {
-      gui = new dat.GUI()
-      gui.closed = true
+      const datModule = await import('dat.gui')
+      const GUIConstructor
+        = (datModule as any).GUI
+          || (datModule as any).default?.GUI
+          || (datModule as any).default as (new () => GUILike) | undefined
+      if (!GUIConstructor)
+        throw new Error('dat.gui is not available')
+      const nextGui = new GUIConstructor()
+      nextGui.closed = true
+      gui = nextGui
     }
     else { gui?.hide() }
     if (alias) {
@@ -377,13 +404,16 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
         loaderArray.push(key)
       })
     }
-    scene!._add = function (...args: any[]) {
+    scene!._add = function (...args: Mesh[]) {
       scene!.add(...args)
-      return () => args.map(arg => () => unmount(arg))
+      return () => args.forEach(unmount)
       function unmount(arg: Mesh) {
-        const { material, geometry } = arg;
-        (material as any).dispose()
-        geometry.dispose()
+        const { material, geometry } = arg
+        if (Array.isArray(material))
+          material.forEach(item => item.dispose())
+        else
+          material?.dispose?.()
+        geometry?.dispose?.()
         scene!.remove(arg)
       }
     }
@@ -406,7 +436,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
       const clock = new THREE.Clock()
       stop = useRaf((time: number) => renderer.render(scene!, animate(Object.assign(animationOptions, { elapsedTime: clock.getElapsedTime(), timestamp: time })) || camera), 0)
     }
-    else { useRaf(() => renderer.render(scene!, camera), 0, true) }
+    else { stop = useRaf(() => renderer.render(scene!, camera), 0) }
 
     (container as HTMLElement).appendChild(dom!)
     hasMounted = true
@@ -456,7 +486,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
       throw new Error('You need to use typeface.json')
     return new Promise(resolve => new FontLoader().load(url, font => resolve(new TextGeometry(text, Object.assign(options, { font })))))
   }
-  function track(...args: [object | string, keyof object, number?, number?, number?]): dat.GUIController {
+  function track(...args: TrackArgs): GUIControllerLike {
     if (!gui)
       throw new Error('gui is not created, please use debug option')
     const p = gui.domElement.parentNode!
@@ -471,10 +501,10 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
   function setUV(target: Mesh, size = 2) {
     target.geometry.setAttribute('uv2', c('ba', target.geometry.attributes.uv.array, size))
   }
-  function glTFLoader(url: string, dracoLoader?: DRACOLoader, callback?: (gltf: GLTFLoader) => void): Promise<GLTFLoader> {
+  function glTFLoader(url: string, dracoLoader?: DRACOLoader, callback?: (gltf: GLTF) => void): Promise<GLTF> {
     return new Promise((resolve) => {
       if (isFn(dracoLoader)) {
-        callback = dracoLoader as unknown as (gltf: GLTFLoader) => void
+        callback = dracoLoader as unknown as (gltf: GLTF) => void
         dracoLoader = undefined
       }
       let gltfLoader
@@ -486,7 +516,7 @@ export function sThree(container: HTMLElement | string, options: SThreeOptions):
       if (dracoLoader)
         gltfLoader.setDRACOLoader(dracoLoader)
       gltfLoader.setCrossOrigin('Anonymous')
-      gltfLoader.load(url, (gltf: GLTFLoader) => {
+      gltfLoader.load(url, (gltf: GLTF) => {
         resolve(gltf)
         callback?.(gltf)
       })
